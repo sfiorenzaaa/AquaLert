@@ -80,4 +80,61 @@ struct LoginView: View {
                         .padding(.horizontal, 24)
                         
                         
-                      
+                        PrimaryButton(
+                            title: "Login",
+                            icon: "arrow.right",
+                            isLoading: authController.isLoading
+                        ) {
+                            login()
+                        }
+                        .padding(.horizontal, 24)
+                        
+                        
+                        HStack {
+                            Text("Belum punya akun?")
+                                .foregroundColor(.gray)
+                            
+                            Button("Daftar Sekarang") {
+                                showRegister = true
+                            }
+                            .foregroundColor(.blue)
+                            .fontWeight(.semibold)
+                        }
+                        .padding(.top, 8)
+                        
+                    }
+                }
+            }
+            .navigationBarHidden(true)
+            .sheet(isPresented: $showRegister) {
+                RegisterView()
+                    .environmentObject(authController)
+            }
+            .alert("Info", isPresented: $showAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(alertMessage)
+            }.onChange(of: authController.errorMessage) { newValue in
+                if let errorMessage = newValue {
+                    alertMessage = errorMessage
+                    showAlert = true
+                }
+            }
+        }
+    }
+    
+    private func login() {
+        if email.isEmpty || password.isEmpty {
+                alertMessage = "Email dan password harus diisi"
+                showAlert = true
+                return
+            }
+        
+        authController.loginEmail(email: email, password: password)
+    }
+}
+
+#Preview {
+    LoginView()
+}
+
