@@ -29,3 +29,35 @@ struct TechnicianHeader: View {
     }
 }
 
+struct TechnicianReportCard: View {
+    let report: ReportModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                StatusBadge(status: report.status)
+                if report.isUrgent {
+                    Label("Darurat", systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption2).foregroundColor(.red)
+                }
+                Spacer()
+                Text(report.reportId).font(.caption2).foregroundColor(.gray)
+            }
+            Text(report.title).font(.subheadline).fontWeight(.semibold)
+            HStack(spacing: 6) {
+                Image(systemName: "location.fill").font(.caption2).foregroundColor(.gray)
+                Text(report.location).font(.caption).foregroundColor(.gray).lineLimit(1)
+            }
+            if report.status == "In Progress" {
+                HStack {
+                    Spacer()
+                    Text("Tap untuk upload bukti & selesaikan →")
+                        .font(.caption).foregroundColor(.green).fontWeight(.medium)
+                }
+            }
+        }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(12)
+    }
+}
