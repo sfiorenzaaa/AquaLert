@@ -131,4 +131,48 @@ class AuthController: ObservableObject {
         }
     }
 
-    
+    func fetchUserData(uid: String) {
+        db.collection("users").document(uid).getDocument { doc, error in
+            DispatchQueue.main.async {
+                self.isLoading = false
+
+                if let error = error {
+                    self.errorMessage = "Gagal memuat profil: \(error.localizedDescription)"
+                    try? Auth.auth().signOut()
+                    return
+                }
+
+                guard let doc = doc, doc.exists, let data = doc.data() else {
+                    self.errorMessage = "Data akun tidak ditemukan di server. Pastikan akun sudah dibuat dengan benar."
+                    try? Auth.auth().signOut()
+                    return
+                }
+
+                let id    = data["id"]    as? String ?? uid
+                let name  = data["name"]  as? String ?? ""
+                let email = data["email"] as? String ?? ""
+                let rawRole = (data["role"] as? String ?? "resident")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .lowercased()
+
+                let role: String
+                switch rawRole {
+                case "admin":                          role = "admin"
+                case "technician", "teknisi":          role = "technician"
+                case "community_leader",
+                     "community leader",
+                     "ketua rt/rw",
+                     "ketua rtrw",
+                     "ketua rt",
+                     "communityleader":                role = "community_leader"
+                case "resident", "warga":              role = "resident"
+                default:                               role = "resident"
+                }
+
+                self.currentUser = UserModel(id: id, name: name, email: email, role: role)
+                self.isLoggedIn  = true
+            }
+        }
+    }
+
+   
