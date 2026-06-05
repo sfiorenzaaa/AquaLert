@@ -175,4 +175,36 @@ class AuthController: ObservableObject {
         }
     }
 
-   
+    func fetchTechnicians() {
+        db.collection("users").whereField("role", isEqualTo: "technician").getDocuments { snapshot, _ in
+            guard let docs = snapshot?.documents else { return }
+            DispatchQueue.main.async {
+                self.technicians = docs.compactMap { doc in
+                    let data = doc.data()
+                    guard let id = data["id"] as? String,
+                          let name = data["name"] as? String,
+                          let email = data["email"] as? String,
+                          let role = data["role"] as? String
+                    else { return nil }
+                    return UserModel(id: id, name: name, email: email, role: role)
+                }
+            }
+        }
+    }
+
+    func friendlyError(_ error: Error) -> String {
+        let code = (error as NSError).code
+        switch code {
+        case 17007: return "Email sudah terdaftar. Gunakan email lain."
+        case 17008: return "Format email tidak valid."
+        case 17026: return "Password harus minimal 6 karakter."
+        case 17009: return "Password salah. Coba lagi."
+        case 17011: return "Email belum terdaftar."
+        default:    return error.localizedDescription
+        }
+    }
+}
+
+
+
+
