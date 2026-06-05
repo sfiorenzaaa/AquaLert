@@ -100,4 +100,35 @@ class AuthController: ObservableObject {
         }
     }
 
+    func loginEmail(email: String, password: String) {
+        isLoading = true
+        errorMessage = nil
+
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    self.errorMessage = self.friendlyError(error)
+                }
+                return
+            }
+            guard let uid = result?.user.uid else {
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    self.errorMessage = "Gagal mendapatkan data akun."
+                }
+                return
+            }
+            self.fetchUserData(uid: uid)
+        }
+    }
+
+    func logout() {
+        try? Auth.auth().signOut()
+        DispatchQueue.main.async {
+            self.currentUser = nil
+            self.isLoggedIn  = false
+        }
+    }
+
     
