@@ -58,4 +58,46 @@ class AuthController: ObservableObject {
         }
     }
 
+    func createEmployeeAccount(
+        username: String,
+        email: String,
+        password: String,
+        role: String,
+        completion: @escaping (Bool, String) -> Void
+    ) {
+        isLoading = true
+
+        let currentFirebaseUser = Auth.auth().currentUser
+
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    completion(false, self.friendlyError(error))
+                }
+                return
+            }
+            guard let uid = result?.user.uid else {
+                completion(false, "Gagal membuat akun.")
+                return
+            }
+
+            let userData: [String: Any] = ["id": uid, "name": username, "email": email, "role": role]
+            self.db.collection("users").document(uid).setData(userData) { err in
+                try? Auth.auth().signOut()
+                if let adminUser = currentFirebaseUser {
+                    self.fetchUserData(uid: adminUser.uid)
+                }
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    if let err = err {
+                        completion(false, err.localizedDescription)
+                    } else {
+                        completion(true, "Akun \(username) berhasil dibuat sebagai \(role).")
+                    }
+                }
+            }
+        }
+    }
+
     
