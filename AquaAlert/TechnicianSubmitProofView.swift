@@ -1,10 +1,6 @@
 //
 //  TechnicianSubmitProofView.swift
-//  AquaAlert
 //
-//  Created by Macbook on 05/06/26.
-//
-
 import SwiftUI
 import Combine
 
