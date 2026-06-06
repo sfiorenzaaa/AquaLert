@@ -90,3 +90,70 @@ struct CommunityLeaderDashboardView: View {
     }
 }
 
+struct CLHeader: View {
+    let userName: String
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Halo, Ketua RT/RW 👋").font(.subheadline).foregroundColor(.gray)
+                Text(userName).font(.title2).fontWeight(.bold)
+                Text("Verifikasi laporan yang sudah dikerjakan").font(.caption).foregroundColor(.purple)
+            }
+            Spacer()
+            ZStack {
+                Circle()
+                    .fill(LinearGradient(colors: [.purple, .indigo], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 55, height: 55)
+                Image(systemName: "person.3.fill").font(.title3).foregroundColor(.white)
+            }
+        }
+        .padding(.top, 16)
+    }
+}
+
+struct CLReportCard: View {
+    let report: ReportModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                StatusBadge(status: report.status)
+                if report.isUrgent {
+                    Label("Darurat", systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption2).foregroundColor(.red)
+                }
+                Spacer()
+                Text(report.reportId).font(.caption2).foregroundColor(.gray)
+            }
+            Text(report.title).font(.subheadline).fontWeight(.semibold)
+            HStack(spacing: 6) {
+                Image(systemName: "location.fill").font(.caption2).foregroundColor(.gray)
+                Text(report.location).font(.caption).foregroundColor(.gray).lineLimit(1)
+            }
+            if !report.assignedTechnicianName.isEmpty {
+                HStack(spacing: 6) {
+                    Image(systemName: "wrench.fill").font(.caption2).foregroundColor(.green)
+                    Text("Teknisi: \(report.assignedTechnicianName)").font(.caption).foregroundColor(.green)
+                }
+            }
+            HStack {
+                Spacer()
+                Text("Tap untuk verifikasi →").font(.caption).foregroundColor(.purple).fontWeight(.medium)
+            }
+        }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(12)
+    }
+}
+
+
+
+
+#Preview {
+    CommunityLeaderHomeView()
+        .environmentObject(AuthController())
+        .environmentObject(ReportController())
+}
+
