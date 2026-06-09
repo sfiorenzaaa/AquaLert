@@ -1,8 +1,5 @@
 //
 //  AdminReportCard.swift
-//  AquaAlert
-//
-//  Created by Vincent on 08/06/26.
 //
 import SwiftUI
 
