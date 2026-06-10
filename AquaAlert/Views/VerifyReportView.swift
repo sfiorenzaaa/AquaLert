@@ -127,7 +127,7 @@ struct VerifyReportView: View {
         reportController.verifyCompletion(reportId: report.reportId, approved: approved) { success in
             if success {
                 successMessage = approved
-                    ? "Laporan \(report.reportId) telah diverifikasi sebagai selesai."
+                    ? "Laporan \(report.reportId) telah diverifikasi dan berstatus Confirmed."
                     : "Laporan \(report.reportId) dikembalikan ke Pending. Admin akan mendapat notifikasi untuk assign ulang."
                 showSuccessAlert = true
             }

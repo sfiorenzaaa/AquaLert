@@ -11,7 +11,7 @@ struct ReportHistoryView: View {
     @State private var searchText     = ""
     @State private var selectedFilter = "Semua"
 
-    let filters = ["Semua", "Pending", "In Progress", "Completed"]
+    let filters = ["Semua", "Pending", "In Progress", "Completed", "Confirmed"]
 
     var filteredReports: [ReportModel] {
         var list = reportController.reports

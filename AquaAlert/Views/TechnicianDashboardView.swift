@@ -7,6 +7,11 @@ struct TechnicianDashboardView: View {
     @EnvironmentObject var authController:   AuthController
     @EnvironmentObject var reportController: ReportController
 
+    private let statColumns = [
+        GridItem(.flexible(), spacing: 12),
+        GridItem(.flexible(), spacing: 12)
+    ]
+
     private var myReports: [ReportModel] {
         guard let uid = authController.currentUser?.id else { return [] }
         return reportController.reports(assignedTo: uid)
@@ -20,15 +25,20 @@ struct TechnicianDashboardView: View {
         myReports.filter { $0.status == "Completed" }
     }
 
+    private var confirmedReports: [ReportModel] {
+        myReports.filter { $0.status == "Confirmed" }
+    }
+
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
                     TechnicianHeader(userName: authController.currentUser?.name ?? "Teknisi")
 
-                    HStack(spacing: 12) {
+                    LazyVGrid(columns: statColumns, spacing: 12) {
                         StatCard(title: "Aktif",   value: "\(activeReports.count)", icon: "wrench.fill",          color: .green)
                         StatCard(title: "Selesai", value: "\(doneReports.count)",   icon: "checkmark.circle.fill", color: .gray)
+                        StatCard(title: "Terkonfirmasi", value: "\(confirmedReports.count)", icon: "checkmark.seal.fill", color: .purple)
                     }
 
                     VStack(alignment: .leading, spacing: 12) {
@@ -62,6 +72,25 @@ struct TechnicianDashboardView: View {
                                 Spacer()
                             }
                             ForEach(doneReports.prefix(3)) { report in
+                                NavigationLink(destination: ReportDetailView(report: report)) {
+                                    TechnicianReportCard(report: report)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
+                        }
+                        .padding()
+                        .background(Color(.systemBackground))
+                        .cornerRadius(16)
+                    }
+
+                    if !confirmedReports.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Image(systemName: "checkmark.seal.fill").foregroundColor(.purple)
+                                Text("Terkonfirmasi").font(.headline).fontWeight(.semibold)
+                                Spacer()
+                            }
+                            ForEach(confirmedReports.prefix(3)) { report in
                                 NavigationLink(destination: ReportDetailView(report: report)) {
                                     TechnicianReportCard(report: report)
                                 }

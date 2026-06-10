@@ -16,6 +16,7 @@ struct StatusBadge: View {
         case "Verified":    return .blue
         case "In Progress": return .green
         case "Completed":   return Color(red: 0.2, green: 0.6, blue: 0.2)
+        case "Confirmed":   return .purple
         case "Rejected":    return .red
         default:            return .gray
         }
@@ -27,6 +28,7 @@ struct StatusBadge: View {
         case "Verified":    return "Diverifikasi"
         case "In Progress": return "Dikerjakan"
         case "Completed":   return "Selesai"
+        case "Confirmed":   return "Terkonfirmasi"
         case "Rejected":    return "Ditolak"
         default:            return status
         }

@@ -130,13 +130,18 @@ struct ReportDetailView: View {
                     )
                     TimelineItem(
                         status: "Sedang Dikerjakan",
-                        isCompleted: report.status == "In Progress" || report.status == "Completed",
+                        isCompleted: ["In Progress", "Completed", "Confirmed"].contains(report.status),
                         date: report.status != "Pending" ? report.date : nil
                     )
                     TimelineItem(
                         status: "Selesai",
-                        isCompleted: report.status == "Completed",
-                        date: report.status == "Completed" ? report.date : nil
+                        isCompleted: ["Completed", "Confirmed"].contains(report.status),
+                        date: ["Completed", "Confirmed"].contains(report.status) ? report.date : nil
+                    )
+                    TimelineItem(
+                        status: "Terkonfirmasi",
+                        isCompleted: report.status == "Confirmed",
+                        date: report.status == "Confirmed" ? report.date : nil
                     )
                 }
 

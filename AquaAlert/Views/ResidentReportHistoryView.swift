@@ -12,7 +12,7 @@ struct ResidentReportHistoryView: View {
     @State private var searchText     = ""
     @State private var selectedFilter = "Semua"
 
-    let filters = ["Semua", "Pending", "In Progress", "Completed"]
+    let filters = ["Semua", "Pending", "In Progress", "Completed", "Confirmed"]
 
     private var myReports: [ReportModel] {
         guard let uid = authController.currentUser?.id else { return [] }

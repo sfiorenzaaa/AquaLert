@@ -10,7 +10,7 @@ struct AllReportsView: View {
     @EnvironmentObject var reportController: ReportController
     @State private var selectedFilter = "Semua"
 
-    let filters = ["Semua", "Pending", "In Progress", "Completed"]
+    let filters = ["Semua", "Pending", "In Progress", "Completed", "Confirmed"]
 
     private var filteredReports: [ReportModel] {
         if selectedFilter == "Semua" { return reportController.reports }

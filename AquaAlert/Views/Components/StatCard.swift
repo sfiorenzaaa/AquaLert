@@ -19,7 +19,11 @@ struct StatCard: View {
                 Image(systemName: icon).font(.title3).foregroundColor(color)
             }
             Text(value).font(.title2).fontWeight(.bold)
-            Text(title).font(.caption).foregroundColor(.gray)
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.gray)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 15)

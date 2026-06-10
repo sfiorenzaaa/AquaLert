@@ -17,6 +17,7 @@ struct StatusTab: View {
         case "Pending":     return .orange
         case "In Progress": return .green
         case "Completed":   return Color(red: 0.2, green: 0.6, blue: 0.2)
+        case "Confirmed":   return .purple
         case "Rejected":    return .red
         default:            return .blue
         }

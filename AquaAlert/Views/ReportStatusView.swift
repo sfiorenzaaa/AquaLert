@@ -11,7 +11,7 @@ struct ReportStatusView: View {
     @EnvironmentObject var reportController: ReportController
     @State private var selectedStatus = "Semua"
 
-    let statusOptions = ["Semua", "Pending", "In Progress", "Completed"]
+    let statusOptions = ["Semua", "Pending", "In Progress", "Completed", "Confirmed"]
 
     private var myReports: [ReportModel] {
         guard let uid = authController.currentUser?.id else { return [] }

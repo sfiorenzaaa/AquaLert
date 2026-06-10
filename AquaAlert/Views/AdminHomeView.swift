@@ -46,6 +46,8 @@ struct AdminDashboardView: View {
                     AdminNeedsReviewSection()
 
                     AdminInProgressSection()
+
+                    AdminConfirmedSection()
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 30)
@@ -82,12 +84,18 @@ struct AdminHeader: View {
 struct AdminStatsRow: View {
     @ObservedObject var reportController: ReportController
 
+    private let columns = [
+        GridItem(.flexible(), spacing: 12),
+        GridItem(.flexible(), spacing: 12)
+    ]
+
     var body: some View {
-        HStack(spacing: 12) {
+        LazyVGrid(columns: columns, spacing: 12) {
             AdminStatCard(title: "Total",      value: reportController.reports.count,        color: .blue,   icon: "doc.text.fill")
             AdminStatCard(title: "Pending",    value: reportController.pendingReports.count,  color: .orange, icon: "clock.fill")
             AdminStatCard(title: "Dikerjakan", value: reportController.inProgressReports.count, color: .green, icon: "arrow.triangle.2.circlepath")
             AdminStatCard(title: "Selesai",    value: reportController.completedReports.count, color: .gray,  icon: "checkmark.circle.fill")
+            AdminStatCard(title: "Terkonfirmasi", value: reportController.confirmedReports.count, color: .purple, icon: "checkmark.seal.fill")
         }
     }
 }
@@ -106,6 +114,8 @@ struct AdminStatCard: View {
             }
             Text("\(value)").font(.title3).fontWeight(.bold)
             Text(title).font(.caption2).foregroundColor(.gray)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
@@ -218,6 +228,35 @@ struct AdminInProgressSection: View {
                 EmptyAdminCard(message: "Tidak ada laporan yang sedang dikerjakan.")
             } else {
                 ForEach(reportController.inProgressReports.prefix(5)) { report in
+                    NavigationLink(destination: ReportDetailView(report: report)) {
+                        AdminReportCard(report: report, showAssignButton: false)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+            }
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(16)
+    }
+}
+
+struct AdminConfirmedSection: View {
+    @EnvironmentObject var reportController: ReportController
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "checkmark.seal.fill").foregroundColor(.purple)
+                Text("Terkonfirmasi").font(.headline).fontWeight(.semibold)
+                Spacer()
+                Text("\(reportController.confirmedReports.count) laporan").font(.caption).foregroundColor(.gray)
+            }
+
+            if reportController.confirmedReports.isEmpty {
+                EmptyAdminCard(message: "Belum ada laporan yang terkonfirmasi.")
+            } else {
+                ForEach(reportController.confirmedReports.prefix(5)) { report in
                     NavigationLink(destination: ReportDetailView(report: report)) {
                         AdminReportCard(report: report, showAssignButton: false)
                     }

@@ -56,7 +56,8 @@ struct HomeMainView: View {
                     ResidentStatsRow(
                         total:      myReports.count,
                         inProgress: myReports.filter { $0.status == "In Progress" }.count,
-                        completed:  myReports.filter { $0.status == "Completed" }.count
+                        completed:  myReports.filter { $0.status == "Completed" }.count,
+                        confirmed:  myReports.filter { $0.status == "Confirmed" }.count
                     )
 
                     Button(action: { showReportForm = true }) {

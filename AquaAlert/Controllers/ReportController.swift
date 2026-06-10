@@ -149,7 +149,8 @@ class ReportController: ObservableObject {
         db.collection("reports").document(reportId).updateData([
             "assignedTechnicianId":   technicianId,
             "assignedTechnicianName": technicianName,
-            "status":                 "In Progress"
+            "status":                 "In Progress",
+            "needsAdminReview":       false
         ]) { error in
             DispatchQueue.main.async {
                 completion(error == nil)
@@ -201,8 +202,11 @@ class ReportController: ObservableObject {
         approved: Bool,
         completion: @escaping (Bool) -> Void
     ) {
-        let newStatus = approved ? "Completed" : "Pending"
+        let newStatus = approved ? "Confirmed" : "Pending"
         var updates: [String: Any] = ["status": newStatus]
+        if approved {
+            updates["needsAdminReview"] = false
+        }
         if !approved {
             updates["assignedTechnicianId"]   = ""
             updates["assignedTechnicianName"] = ""
@@ -225,6 +229,7 @@ class ReportController: ObservableObject {
     var needsReviewReports: [ReportModel] { reports.filter { $0.needsAdminReview && $0.status == "Pending" } }
     var inProgressReports:  [ReportModel] { reports.filter { $0.status == "In Progress" } }
     var completedReports:   [ReportModel] { reports.filter { $0.status == "Completed" } }
+    var confirmedReports:   [ReportModel] { reports.filter { $0.status == "Confirmed" } }
     
     func reports(forUser userId: String)       -> [ReportModel] { reports.filter { $0.submittedByUserId == userId } }
     func reports(assignedTo techId: String)    -> [ReportModel] { reports.filter { $0.assignedTechnicianId == techId } }
