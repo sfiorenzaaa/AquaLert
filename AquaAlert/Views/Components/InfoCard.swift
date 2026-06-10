@@ -5,7 +5,7 @@
 //  Created by Macbook on 06/06/26.
 //
 
-mport SwiftUI
+import SwiftUI
 
 struct InfoCard: View {
     var body: some View {
